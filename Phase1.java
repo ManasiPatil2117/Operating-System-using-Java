@@ -62,26 +62,34 @@ public class Phase1 {
                 }
             }
             if (IR[0] == 'C' && IR[1] == 'R') {
+                String ts = String.valueOf(IR[2]);
+                ts += String.valueOf(IR[3]);
+                int t1 = Integer.parseInt(ts);
                 for (int i = 0; i < 4; i++) {
-                    if (R[i] == M[IR[3]][IR[4]]) {
+                    if (R[i] == M[t1][i]) {
                         c = 1;
-                    } else
+                    } else {
                         c = 0;
+                        break;
+                    }
                 }
             }
             if (IR[0] == 'B' && IR[1] == 'T') {
+                String ts = String.valueOf(IR[2]);
+                ts += String.valueOf(IR[3]);
+                int t1 = Integer.parseInt(ts);
                 if (c == 1) {
-                    IC[0] = IR[3];
-                    IC[1] = IR[4];
+                    IC[0] = t1;
+                    // IC[1] = IR[4];
                 }
             }
             if (SI == 1) {
                 readF();
-                SI=0;
+                SI = 0;
             }
             if (SI == 2) {
                 writeF();
-                SI=0;
+                SI = 0;
             }
             if (SI == 3) {
                 terminate();
