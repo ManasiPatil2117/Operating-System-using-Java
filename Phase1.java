@@ -9,7 +9,7 @@ public class Phase1 {
     static char buffer[] = new char[41];
     static String s;
     static BufferedReader br;
-    static FileWriter outputF;
+    // static FileWriter outputF;
 
     static void init() {
         M = new char[100][4];
@@ -77,15 +77,14 @@ public class Phase1 {
             }
             if (SI == 1) {
                 readF();
+                SI=0;
             }
             if (SI == 2) {
-                outputF = new FileWriter("F:\\VIT\\Module6\\Lab\\OS\\cp\\Output.txt", true);
-                writeF(outputF);
-                outputF.close();
-
+                writeF();
+                SI=0;
             }
             if (SI == 3) {
-                // terminate();
+                terminate();
             }
         }
     }
@@ -109,22 +108,43 @@ public class Phase1 {
     static void incrementIC() {
 
         IC[0] = IC[0] + 1;
+        System.out.println(IC[0]);
 
     }
 
-    private static void writeF(FileWriter outputF) throws Exception {
+    private static void writeF() {
         String ts = String.valueOf(IR[2]);
         ts += String.valueOf(IR[3]);
         int t1 = Integer.parseInt(ts);
         int c = 0;
+        String s = "";
         while (M[t1][c] != 0) {
-            outputF.write(M[t1][c++]);
+            s += M[t1][c++];
             if (c == 4) {
                 t1++;
                 c = 0;
             }
+            if (t1 == (t1 + 10))
+                break;
         }
-        outputF.write("\n\n");
+        try {
+            FileWriter outputF = new FileWriter("F:\\VIT\\Module6\\Lab\\OS\\cp\\Output.txt", true);
+            outputF.write(s);
+            outputF.write("\n");
+            outputF.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private static void terminate() {
+        try {
+            FileWriter outputF = new FileWriter("F:\\VIT\\Module6\\Lab\\OS\\cp\\Output.txt", true);
+            outputF.write("\n\n");
+            outputF.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -144,7 +164,6 @@ public class Phase1 {
                     }
                     s = br.readLine();
                 }
-                int m = 0;
                 int k = 0;
                 int c = 0;
                 for (int i = 0; i < buffer.length; i++) {
