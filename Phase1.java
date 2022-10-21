@@ -4,12 +4,11 @@ public class Phase1 {
     static char M[][];
     static char R[] = new char[4];
     static char IR[] = new char[4];
-    static int IC[] = new int[2];
+    static int IC;
     static int c, SI;
     static char buffer[] = new char[41];
     static String s;
     static BufferedReader br;
-    // static FileWriter outputF;
 
     static void init() {
         M = new char[100][4];
@@ -26,63 +25,66 @@ public class Phase1 {
     }
 
     private static void startExecution() throws Exception {
-        IC[0] = 0;
-        IC[1] = 0;
+        IC = 0;
         executeUserProgram();
     }
 
     private static void executeUserProgram() throws Exception {
+        int t1 = 0;
+        String ts = "";
         while (IR[0] != 'H') {
             for (int i = 0; i < 4; i++)
-                IR[i] = M[IC[0]][i];
-            incrementIC();
-            if (IR[0] == 'G' && IR[1] == 'D') {
-                SI = 1;
-            }
-            if (IR[0] == 'P' && IR[1] == 'D') {
-                SI = 2;
-            }
-            if (IR[0] == 'H') {
-                SI = 3;
-            }
-            if (IR[0] == 'L' && IR[1] == 'R') {
-                String ts = String.valueOf(IR[2]);
+                IR[i] = M[IC][i];
+            String ch = Character.toString(IR[0]);
+            ch += Character.toString(IR[1]);
+            if (IR[0] != 'H') {
+                ts = String.valueOf(IR[2]);
                 ts += String.valueOf(IR[3]);
-                int t1 = Integer.parseInt(ts);
-                for (int i = 0; i < 4; i++) {
-                    R[i] = M[t1][i];
-                }
+                t1 = Integer.parseInt(ts);
             }
-            if (IR[0] == 'S' && IR[1] == 'R') {
-                String ts = String.valueOf(IR[2]);
-                ts += String.valueOf(IR[3]);
-                int t1 = Integer.parseInt(ts);
-                for (int i = 0; i < 4; i++) {
-                    M[t1][i] = R[i];
-                }
-            }
-            if (IR[0] == 'C' && IR[1] == 'R') {
-                String ts = String.valueOf(IR[2]);
-                ts += String.valueOf(IR[3]);
-                int t1 = Integer.parseInt(ts);
-                for (int i = 0; i < 4; i++) {
-                    if (R[i] == M[t1][i]) {
-                        c = 1;
-                    } else {
-                        c = 0;
-                        break;
+            IC += 1;
+            switch (ch) {
+                case "GD":
+                    SI = 1;
+                    break;
+                case "PD":
+                    SI = 2;
+
+                    break;
+                case "H":
+                    SI = 3;
+
+                    break;
+                case "LR":
+                    for (int i = 0; i < 4; i++) {
+                        R[i] = M[t1][i];
                     }
-                }
+                    break;
+                case "SR":
+                    String tss = String.valueOf(IR[2]);
+                    ts += String.valueOf(IR[3]);
+                    int t1s = Integer.parseInt(tss);
+                    for (int i = 0; i < 4; i++) {
+                        M[t1s][i] = R[i];
+                    }
+                    break;
+                case "CR":
+                    for (int i = 0; i < 4; i++) {
+                        if (R[i] == M[t1][i]) {
+                            c = 1;
+                        } else {
+                            c = 0;
+                            break;
+                        }
+                    }
+                    break;
+                case "BT":
+                    if (c == 1) {
+                        IC = t1;
+                    }
+                    break;
             }
-            if (IR[0] == 'B' && IR[1] == 'T') {
-                String ts = String.valueOf(IR[2]);
-                ts += String.valueOf(IR[3]);
-                int t1 = Integer.parseInt(ts);
-                if (c == 1) {
-                    IC[0] = t1;
-                    // IC[1] = IR[4];
-                }
-            }
+
             if (SI == 1) {
                 readF();
                 SI = 0;
@@ -102,6 +104,7 @@ public class Phase1 {
         String ts = String.valueOf(IR[2]);
         ts += String.valueOf(IR[3]);
         int t1 = Integer.parseInt(ts);
+        int t = t1;
         int c = 0;
         for (int i = 0; i < s.length(); i++) {
             M[t1][c] = s.charAt(i);
@@ -110,20 +113,16 @@ public class Phase1 {
                 c = 0;
                 t1++;
             }
+            if (t == (t1 + 10))
+                break;
         }
-    }
-
-    static void incrementIC() {
-
-        IC[0] = IC[0] + 1;
-        System.out.println(IC[0]);
-
     }
 
     private static void writeF() {
         String ts = String.valueOf(IR[2]);
         ts += String.valueOf(IR[3]);
         int t1 = Integer.parseInt(ts);
+        int t = t1;
         int c = 0;
         String s = "";
         while (M[t1][c] != 0) {
@@ -132,7 +131,7 @@ public class Phase1 {
                 t1++;
                 c = 0;
             }
-            if (t1 == (t1 + 10))
+            if (t == (t1 + 10))
                 break;
         }
         try {
@@ -159,42 +158,41 @@ public class Phase1 {
         FileReader file = new FileReader("F:\\VIT\\Module6\\Lab\\OS\\cp\\Input.txt");
         br = new BufferedReader(file);
         s = br.readLine();
-
+        buffer = s.toCharArray();
         while (s != null) {
 
-            if (s.startsWith("$AMJ")) {
+            if (buffer[0] == '$' && buffer[1] == 'A' && buffer[2] == 'M' && buffer[3] == 'J') {
                 init();
-                int b = 0;
-                s = br.readLine();
-                while (!s.startsWith("$DTA")) {
-                    for (int i = 0; i < s.length(); i++) {
-                        buffer[b++] = s.charAt(i);
-                    }
-                    s = br.readLine();
-                }
-                int k = 0;
                 int c = 0;
-                for (int i = 0; i < buffer.length; i++) {
-                    if (buffer[i] == 'H')
-                        break;
-                    M[k][c] = buffer[i];
-                    c++;
-                    if (c == 4) {
-                        c = 0;
+                int k = 0;
+                s = br.readLine();
+                int ct = 0;
+                while (!(buffer[0] == '$' && buffer[1] == 'D' && buffer[2] == 'T' && buffer[3] == 'A')) {
+                    while (ct != s.length()) {
+                        for (int i = 0; i < 4; i++) {
+                            if (ct == s.length())
+                                break;
+                            buffer[i] = s.charAt(ct);
+                            ct++;
+                        }
+                        for (int i = 0; i < 4; i++)
+                            M[k][i] = buffer[i];
                         k++;
                     }
+                    s = br.readLine();
+                    buffer = s.toCharArray();
                 }
                 M[k][c] = 'H';
             }
-            if (s.startsWith("$DTA")) {
+            if (buffer[0] == '$' && buffer[1] == 'D' && buffer[2] == 'T' && buffer[3] == 'A') {
                 startExecution();
             }
 
-            if (s.startsWith("$END")) {
+            if (buffer[0] == '$' && buffer[1] == 'E' && buffer[2] == 'N' && buffer[3] == 'D') {
                 printMemory();
-                return;
             }
             s = br.readLine();
+            buffer = s.toCharArray();
         }
     }
 
