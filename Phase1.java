@@ -61,11 +61,8 @@ public class Phase1 {
                     }
                     break;
                 case "SR":
-                    String tss = String.valueOf(IR[2]);
-                    ts += String.valueOf(IR[3]);
-                    int t1s = Integer.parseInt(tss);
                     for (int i = 0; i < 4; i++) {
-                        M[t1s][i] = R[i];
+                        M[t1][i] = R[i];
                     }
                     break;
                 case "CR":
@@ -175,8 +172,13 @@ public class Phase1 {
                             buffer[i] = s.charAt(ct);
                             ct++;
                         }
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < 4; i++) {
+                            if (buffer[0] == 'H'){
+                                
+                                break;
+                            }
                             M[k][i] = buffer[i];
+                        }
                         k++;
                     }
                     s = br.readLine();
